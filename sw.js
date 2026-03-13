@@ -6,7 +6,7 @@ const ASSET = [
     './app.js',
     './images/main-icon.png',
     './db.js',
-    //css
+    //ver lo del css nuevo, QUE NO SE ME OLVIDE
 ];
 
 
