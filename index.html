@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> InventoryMGT </title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Inventory Manager</h1>
+        <div class="statusHeader">
+            <div id="status">Checking status...</div>
+            <div style="padding-bottom: 20px;"></div>
+        </div>
+    </header>
+
+    <section class="inventory-section">
+        <form id="form-inventory">
+            <input type="text" id="input-product" placeholder="Product Name" required>
+            <input type="number" min="1" id="input-quantity" placeholder="Quantity" required>
+
+            <button type="submit" id="addProduct">ADD</button>
+        </form>
+    </section>
+
+    <section class="products-section">
+        <h2>Saved Products </h2>
+        <ul id="products-list">
+        </ul>
+
+    </section>
+
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+
+</body>
+
+</html>
