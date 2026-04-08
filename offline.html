@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin Conexión - GeoReport</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        h1 { color: #38bdf8; }
+        p { color: #94a3b8; max-width: 80%; }
+        button {
+            margin-top: 25px;
+            background: #38bdf8;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon">📡❌</div>
+    <h1>Estás en modo offline</h1>
+    <p>Parece que no tienes conexión a internet y esta página no ha sido guardada previamente.</p>
+    <p><strong>Pero no te preocupes:</strong> Aún puedes regresar al inicio y crear nuevos reportes; se guardarán localmente.</p>
+    <button onclick="window.location.href='./index.html'">Volver al Inicio</button>
+</body>
+</html>

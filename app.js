@@ -1,95 +1,163 @@
+// Registro del Service Worker
 if ('serviceWorker' in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service worker registered', reg))
-            .catch(err => console.warn('Error in SW register', err));
-    });
+    navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW registrado'))
+        .catch(err => console.log('Error SW', err));
+
 }
 
-
-const form = document.getElementById('form-inventory');
-const inputProduct = document.getElementById('input-product');
-const inputQuantity = document.getElementById('input-quantity');
+// Control de estado de conexión
 const statusDiv = document.getElementById('status');
+const updateStatus = () => {
+    const isOnline = navigator.onLine;
+    statusDiv.textContent = isOnline ? 'Conectado - Modo Online' : 'Sin conexión - Modo Offline';
+    statusDiv.className = isOnline ? 'status-online' : 'status-offline';
+};
+    updateStatus();
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
 
-//Handle send form
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const products = inputProduct.value.trim();
-    const quantity = inputQuantity.value.trim();
+// Configuración de Notificaciones
+if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
 
-    if (products !== "" && quantity !== "") {
-        insertProductsTableDB(products, quantity);
-        inputProduct.value = '';
-        inputQuantity.value = '';
-        inputProduct.focus();
+function notify(msg) {
+    if (Notification.permission === "granted") {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification('GeoReport UTP', {
+                body: msg,
+                icon: 'images/icon-192.png'
+            });
+        });
+    }
+}
+
+// Obtención de Coordenadas GPS
+const getCoords = () => {
+    return new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+            pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+            err => {
+                console.warn("GPS denegado o no disponible");
+                resolve({ lat: 0, lng: 0 });
+            },
+            { enableHighAccuracy: true, timeout: 5000 }
+        );
+    });
+};
+
+// Tomar fotos
+const form = document.getElementById('form-report');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const photoPreview = document.getElementById('temp-preview');
+const photoText = document.getElementById('photo-text');
+const inputPhoto = document.getElementById('input-photo');
+const cameraLiveDiv = document.getElementById('camera-live');
+let streamInstance = null;
+let capturedBlob = null; 
+
+// Seleccionar archivos
+document.getElementById('btn-use-file').addEventListener('click', () => {
+    stopCamera();
+    inputPhoto.click();
+});
+
+inputPhoto.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            capturedBlob = e.target.result;
+            showPreview(capturedBlob);
+        };
+        reader.readAsDataURL(this.files[0]);
     }
 });
 
-
-function updateOnlineStatus() {
-    if (navigator.onLine) {
-        statusDiv.textContent = 'Modo ONLINE';
-        statusDiv.className = 'status-online';
-        statusDiv.style.backgroundColor = 'green'; 
-    } else {
-        statusDiv.textContent = 'Modo OFFLINE';
-        statusDiv.className = 'status-offline';
-        statusDiv.style.backgroundColor = 'red';
+// Tomar foto desde la camara
+document.getElementById('btn-use-camera').addEventListener('click', async () => {
+    cameraLiveDiv.style.display = 'block';
+    photoPreview.style.display = 'none';
+    try {
+        streamInstance = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" },
+            audio: false
+        });
+        video.srcObject = streamInstance;
+    } catch (err) {
+        alert("No se pudo acceder a la cámara: " + err);
+        cameraLiveDiv.style.display = 'none';
     }
+});
+
+document.getElementById('btn-capture').addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    capturedBlob = canvas.toDataURL('image/jpeg'); // Guardamos el base64
+    showPreview(capturedBlob);
+    stopCamera();
+});
+
+function showPreview(src) {
+    photoPreview.src = src;
+    photoPreview.style.display = 'block';
+    cameraLiveDiv.style.display = 'none';
+    photoText.innerText = "¡FOTO LISTA!";
+    photoText.style.color = "#059669";
+    document.querySelector('.camera-label')?.classList.add('captured');
 }
 
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
+function stopCamera() {
+    if (streamInstance) {
+        streamInstance.getTracks().forEach(track => track.stop());
+        streamInstance = null;
+    }
+    cameraLiveDiv.style.display = 'none';
+}
 
-updateOnlineStatus();
+// Enviar reporte
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// //CSR
+    if (!capturedBlob) {
+        return alert("Es obligatorio tomar una foto de la incidencia.");
+    }
 
-// const tasklist = document.getElementById("task-list");
+    try {
+        const coords = await getCoords();
 
-// //Array CSR
+        const report = {
+            title: document.getElementById('input-title').value,
+            desc: document.getElementById('input-desc').value,
+            photo: capturedBlob,
+            lat: coords.lat,
+            lng: coords.lng,
+            date: new Date().toLocaleString()
+        };
 
-// const tareasLocales = [
-//     "Tarea desde JS: Configurar entorno",
-//     "Tarea desde JS: Probar Live Server",
-//     "Tarea desde JS: Analizar el DOM",
-// ]
+        await saveReportDB(report);
 
-// function renderLocalTasks() {
-//     tasklist.innerHTML = "";
-//     tareasLocales.forEach(tarea => {
-//         const li = document.createElement("li");
-//         li.textContent = tarea;
-//         tasklist.appendChild(li);
-//     });
-// }
+        const statusMsg = navigator.onLine ? "Reporte enviado con éxito" : "Guardado en espera de conexión (Offline)";
+        notify(statusMsg);
 
-// renderLocalTasks ();
+        resetForm();
 
-// async function fetchRemoteTasks() {
-//     const container = document.getElementById("app-content");
+    } catch (error) {
+        console.error(error);
+        alert("Error al procesar el reporte.");
+    }
+});
 
-//     //Mostrar estado de carga
-//     container.innerHTML = '<p class="loading">Cargando datos de la API externa...</p>';
-
-//     try {
-//         const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5');
-//         const posts = await response.json();
-
-//         //Limpiar contenedor y nueva lista
-//         container.innerHTML = '<ul id="task-list"></ul>';
-//         const newList = document.getElementById('task-list');
-
-//         //Renderizar
-//         posts.forEach(post => {
-//             const li = document.createElement('li');
-//             li.innerHTML = `<strong>${post.title}</strong><br><small>${post.body}</small>`;
-//             newList.appendChild(li);
-//         })
-//     } catch (error) {
-//         container.innerHTML = '<p style="color:red">Error al cargar los datos, tienes internet?</p>';
-//         console.error("Error en fetch: ", error); l
-//     }
-// }
-
+function resetForm() {
+    form.reset();
+    capturedBlob = null;
+    photoPreview.style.display = 'none';
+    photoPreview.src = "";
+    photoText.innerText = "TOMAR FOTO DE LA INCIDENCIA";
+    photoText.style.color = "";
+    document.querySelector('.camera-label')?.classList.remove('captured');
+}

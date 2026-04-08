@@ -1,41 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> InventoryMGT </title>
+    <title>GeoReport UTP</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#38bdf8">
 </head>
 
 <body>
-    <header>
-        <h1>Inventory Manager</h1>
-        <div class="statusHeader">
-            <div id="status">Checking status...</div>
-            <div style="padding-bottom: 20px;"></div>
+    <nav class="navbar">
+        <div class="nav-content">
+            <strong>GeoReport</strong> <span>UTP</span>
         </div>
+    </nav>
+
+    <header>
+        <div id="status">Verificando conexión...</div>
     </header>
 
-    <section class="inventory-section">
-        <form id="form-inventory">
-            <input type="text" id="input-product" placeholder="Product Name" required>
-            <input type="number" min="1" id="input-quantity" placeholder="Quantity" required>
+    <main>
+        <section class="form-section">
+    <form id="form-report">
+        <h2>Nuevo Reporte</h2>
+        <input type="text" id="input-title" placeholder="¿Qué falla encontraste?" required>
+        <textarea id="input-desc" placeholder="Descripción detallada..." required></textarea>
 
-            <button type="submit" id="addProduct">ADD</button>
-        </form>
-    </section>
+        <div id="photo-container">
+            <div id="source-selector">
+                <p>¿Cómo quieres adjuntar la foto?</p>
+                <div class="options-row">
+                    <button type="button" id="btn-use-camera" class="btn-option">📸 Usar Cámara</button>
+                    <button type="button" id="btn-use-file" class="btn-option">📁 Subir Archivo</button>
+                </div>
+            </div>
 
-    <section class="products-section">
-        <h2>Saved Products </h2>
-        <ul id="products-list">
-        </ul>
+            <div id="camera-live" style="display: none;">
+                <video id="video" autoplay playsinline style="width: 100%; border-radius: 8px;"></video>
+                <button type="button" id="btn-capture" class="btn-send" style="background: #059669;">Capturar Foto</button>
+                <canvas id="canvas" style="display: none;"></canvas>
+            </div>
 
-    </section>
+            <input type="file" id="input-photo" accept="image/*" style="display: none;">
+            
+            <div id="preview-container">
+                <img id="temp-preview" style="display: none; width: 100%; margin-top: 10px; border-radius: 8px;">
+                <p id="photo-text"></p>
+            </div>
+        </div>
+
+        <button type="submit" id="btn-send">ENVIAR REPORTE</button>
+    </form>
+</section>
+
+        <section class="list-section">
+            <h2>Reportes Recientes</h2>
+            <ul id="reports-list"></ul>
+        </section>
+    </main>
+
+    <button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">+</button>
 
     <script src="db.js"></script>
     <script src="app.js"></script>
-
 </body>
 
 </html>

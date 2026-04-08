@@ -1,13 +1,21 @@
 {
-    "name": "Mi primera PWA",
-    "short_name": "PWA-UTP",
-    "start_url": "./index.html",
-    "background_color": "#ffffff",
-    "icons":[
-        {
-            "src": "images/main_icon.png",
-            "size": "192x192",
-            "type": "image/png"
-        }
-    ]
+  "name": "GeoReport UTP - Sistema de Incidencias",
+  "short_name": "GeoReport",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#38bdf8",
+  "description": "Reporte de incidencias universitarias con GPS y fotos.",
+  "icons": [
+    {
+      "src": "images/main-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/main-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
