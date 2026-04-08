@@ -1,11 +1,11 @@
 {
-  "name": "GeoReport UTP - Sistema de Incidencias",
+  "name": "GeoReport UTR - Incident System",
   "short_name": "GeoReport",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#38bdf8",
-  "description": "Reporte de incidencias universitarias con GPS y fotos.",
+  "description": "University incident report with GPS and photos",
   "icons": [
     {
       "src": "images/main-icon.png",

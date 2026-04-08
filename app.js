@@ -10,7 +10,7 @@ if ('serviceWorker' in navigator) {
 const statusDiv = document.getElementById('status');
 const updateStatus = () => {
     const isOnline = navigator.onLine;
-    statusDiv.textContent = isOnline ? 'Conectado - Modo Online' : 'Sin conexión - Modo Offline';
+    statusDiv.textContent = isOnline ? 'CONNECTED - Online Mode' : 'No conection - Offline Mode';
     statusDiv.className = isOnline ? 'status-online' : 'status-offline';
 };
     updateStatus();
@@ -25,7 +25,7 @@ if ("Notification" in window && Notification.permission !== "granted") {
 function notify(msg) {
     if (Notification.permission === "granted") {
         navigator.serviceWorker.ready.then(reg => {
-            reg.showNotification('GeoReport UTP', {
+            reg.showNotification('GeoReport UTR', {
                 body: msg,
                 icon: 'images/icon-192.png'
             });
@@ -39,7 +39,7 @@ const getCoords = () => {
         navigator.geolocation.getCurrentPosition(
             pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
             err => {
-                console.warn("GPS denegado o no disponible");
+                console.warn("GPS denied");
                 resolve({ lat: 0, lng: 0 });
             },
             { enableHighAccuracy: true, timeout: 5000 }
@@ -86,7 +86,7 @@ document.getElementById('btn-use-camera').addEventListener('click', async () => 
         });
         video.srcObject = streamInstance;
     } catch (err) {
-        alert("No se pudo acceder a la cámara: " + err);
+        alert("No access to the camara: " + err);
         cameraLiveDiv.style.display = 'none';
     }
 });
@@ -97,7 +97,7 @@ document.getElementById('btn-capture').addEventListener('click', () => {
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    capturedBlob = canvas.toDataURL('image/jpeg'); // Guardamos el base64
+    capturedBlob = canvas.toDataURL('image/jpeg');
     showPreview(capturedBlob);
     stopCamera();
 });
@@ -106,7 +106,7 @@ function showPreview(src) {
     photoPreview.src = src;
     photoPreview.style.display = 'block';
     cameraLiveDiv.style.display = 'none';
-    photoText.innerText = "¡FOTO LISTA!";
+    photoText.innerText = "¡Photo Done!";
     photoText.style.color = "#059669";
     document.querySelector('.camera-label')?.classList.add('captured');
 }
@@ -124,7 +124,7 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (!capturedBlob) {
-        return alert("Es obligatorio tomar una foto de la incidencia.");
+        return alert("Mandatory take photo");
     }
 
     try {
@@ -141,14 +141,14 @@ form.addEventListener('submit', async (e) => {
 
         await saveReportDB(report);
 
-        const statusMsg = navigator.onLine ? "Reporte enviado con éxito" : "Guardado en espera de conexión (Offline)";
+        const statusMsg = navigator.onLine ? "Report send succesfully" : "Saved while waiting for connection (Offline)";
         notify(statusMsg);
 
         resetForm();
 
     } catch (error) {
         console.error(error);
-        alert("Error al procesar el reporte.");
+        alert("Error proccessing the report");
     }
 });
 
@@ -157,7 +157,7 @@ function resetForm() {
     capturedBlob = null;
     photoPreview.style.display = 'none';
     photoPreview.src = "";
-    photoText.innerText = "TOMAR FOTO DE LA INCIDENCIA";
+    photoText.innerText = "TAKE A PHOTO OF THE INCIDENT";
     photoText.style.color = "";
     document.querySelector('.camera-label')?.classList.remove('captured');
 }

@@ -13,50 +13,51 @@
 <body>
     <nav class="navbar">
         <div class="nav-content">
-            <strong>GeoReport</strong> <span>UTP</span>
+            <strong>GeoReport</strong> <span>UTR</span>
         </div>
     </nav>
 
     <header>
-        <div id="status">Verificando conexión...</div>
+        <div id="status">Verifying conection...</div>
     </header>
 
     <main>
         <section class="form-section">
-    <form id="form-report">
-        <h2>Nuevo Reporte</h2>
-        <input type="text" id="input-title" placeholder="¿Qué falla encontraste?" required>
-        <textarea id="input-desc" placeholder="Descripción detallada..." required></textarea>
+            <form id="form-report">
+                <h2>New Report</h2>
+                <input type="text" id="input-title" placeholder="What flaw did you find?" required>
+                <textarea id="input-desc" placeholder="Detailed description..." required></textarea>
 
-        <div id="photo-container">
-            <div id="source-selector">
-                <p>¿Cómo quieres adjuntar la foto?</p>
-                <div class="options-row">
-                    <button type="button" id="btn-use-camera" class="btn-option">📸 Usar Cámara</button>
-                    <button type="button" id="btn-use-file" class="btn-option">📁 Subir Archivo</button>
+                <div id="photo-container">
+                    <div id="source-selector">
+                        <p>How do you want to attach the photo?</p>
+                        <div class="options-row">
+                            <button type="button" id="btn-use-camera" class="btn-option">Use Camara</button>
+                            <button type="button" id="btn-use-file" class="btn-option">Upload file</button>
+                        </div>
+                    </div>
+
+                    <div id="camera-live" style="display: none;">
+                        <video id="video" autoplay playsinline style="width: 100%; border-radius: 8px;"></video>
+                        <button type="button" id="btn-capture" class="btn-send" style="background: #059669;">Take photo</button>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+
+                    <input type="file" id="input-photo" accept="image/*" style="display: none;">
+
+                    <div id="preview-container">
+                        <img id="temp-preview"
+                            style="display: none; width: 100%; margin-top: 10px; border-radius: 8px;">
+                        <p id="photo-text"></p>
+                    </div>
                 </div>
-            </div>
 
-            <div id="camera-live" style="display: none;">
-                <video id="video" autoplay playsinline style="width: 100%; border-radius: 8px;"></video>
-                <button type="button" id="btn-capture" class="btn-send" style="background: #059669;">Capturar Foto</button>
-                <canvas id="canvas" style="display: none;"></canvas>
-            </div>
-
-            <input type="file" id="input-photo" accept="image/*" style="display: none;">
-            
-            <div id="preview-container">
-                <img id="temp-preview" style="display: none; width: 100%; margin-top: 10px; border-radius: 8px;">
-                <p id="photo-text"></p>
-            </div>
-        </div>
-
-        <button type="submit" id="btn-send">ENVIAR REPORTE</button>
-    </form>
-</section>
+                <button type="submit" id="btn-send">SEND REPORT</button>
+            </form>
+        </section>
 
         <section class="list-section">
-            <h2>Reportes Recientes</h2>
+            <h2>RECENT REPORTS</h2>
             <ul id="reports-list"></ul>
         </section>
     </main>

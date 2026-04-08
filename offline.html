@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sin Conexión - GeoReport</title>
+    <title>Offline - GeoReport</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -17,12 +18,21 @@
             margin: 0;
             text-align: center;
         }
+
         .icon {
             font-size: 80px;
             margin-bottom: 20px;
         }
-        h1 { color: #38bdf8; }
-        p { color: #94a3b8; max-width: 80%; }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        p {
+            color: #94a3b8;
+            max-width: 80%;
+        }
+
         button {
             margin-top: 25px;
             background: #38bdf8;
@@ -35,11 +45,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="icon">📡❌</div>
-    <h1>Estás en modo offline</h1>
-    <p>Parece que no tienes conexión a internet y esta página no ha sido guardada previamente.</p>
-    <p><strong>Pero no te preocupes:</strong> Aún puedes regresar al inicio y crear nuevos reportes; se guardarán localmente.</p>
-    <button onclick="window.location.href='./index.html'">Volver al Inicio</button>
+    <h1>You are in offline mode</h1>
+    <p>It appears you don't have an internet connection and this page hasn't been previously saved.</p>
+    <p><strong>But don't worry:</strong> You can still return to the homepage and create new reports; they will be savedlocally.</p>
+    <button onclick="window.location.href='./index.html'">Return to Homepage</button>
 </body>
+
 </html>
